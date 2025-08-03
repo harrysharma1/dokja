@@ -1,0 +1,12 @@
+  <ul>
+    {% for novel in WebNovels %}
+      <li>
+        <img src="{{ novel.ImageUrlPath }}" alt="{{ novel.Name }}" width="150"><br>
+        <strong>{{ novel.Name }}</strong><br>
+        by {{ novel.AuthorName }}<br>
+        Chapters: {{ novel.TotalChapters }}<br>
+        Info: {{ novel.Info }}<br>
+        <a href="{{ novel.UrlPath }}">Read more</a>
+      </li>
+    {% endfor %}
+  </ul>
