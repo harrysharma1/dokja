@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dokja/db"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -8,6 +9,7 @@ import (
 )
 
 func main() {
+	db.Create()
 	engine := django.New("./templates", ".html")
 
 	app := fiber.New(fiber.Config{
