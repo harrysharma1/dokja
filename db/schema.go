@@ -15,6 +15,7 @@ type Chapters struct {
 }
 
 type Chapter struct {
-	Name    string `bson:"name"`
-	UrlPath string `bson:"url_path"`
+	ChapterTitle string `bson:"chapter_title"`
+	UrlPath      string `bson:"url_path"`
+	ChapterText  string `bson:"chapter_text"`
 }
