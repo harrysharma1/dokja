@@ -1,12 +1,12 @@
-  <ul>
-    {% for novel in WebNovels %}
-      <li>
-        <img src="{{ novel.ImageUrlPath }}" alt="{{ novel.Name }}" width="150"><br>
-        <strong>{{ novel.Name }}</strong><br>
-        by {{ novel.AuthorName }}<br>
-        Chapters: {{ novel.TotalChapters }}<br>
-        Info: {{ novel.Info }}<br>
-        <a href="/novels{{ novel.UrlPath }}">Read more</a>
-      </li>
-    {% endfor %}
-  </ul>
+<div class="flex flex-row flex-wrap gap-4 p-4 pt-20">
+  {% for novel in WebNovels %}
+    <div class="w-512 bg-white rounded-lg shadow-md p-4">
+      <img src="{{ novel.ImageUrlPath }}" alt="{{ novel.Name }}" class="w-40 h-40 object-cover rounded">
+      <h2 class="text-lg font-bold mt-2">{{ novel.Name }}</h2>
+      <p class="text-sm text-gray-600">by {{ novel.AuthorName }}</p>
+      <p class="text-sm text-gray-700">Chapters: {{ novel.TotalChapters }}</p>
+      <p class="text-sm text-gray-700 mt-1">{{ novel.Info|slice:":250" }}{% if novel.Info|length > 250 %}...{% endif %}</p>
+      <a href="/novels{{ novel.UrlPath }}" class="text-blue-500 hover:underline mt-2 block">Read more</a>
+    </div>
+  {% endfor %}
+</div>

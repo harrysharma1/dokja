@@ -85,7 +85,13 @@ func Listen() {
 		if err != nil {
 			log.Fatalf("Error Getting Novel: %s", err)
 		}
-		return c.SendString(fmt.Sprintf("Name: %s,\nAuthor: %s,\nImage: %s,\nPath: %s,\nInfo: %s", webNovel.Name, webNovel.AuthorName, webNovel.ImageUrlPath, webNovel.UrlPath, webNovel.Info))
+		if len(webNovel.Name) == 0 {
+			return c.Redirect("/")
+		}
+		return c.Render("individual_novel_page", fiber.Map{
+			"Title":    fmt.Sprintf("Dokja - %s", webNovel.Name),
+			"WebNovel": webNovel,
+		})
 	})
 
 	log.Fatal(app.Listen(":6969"))

@@ -1,0 +1,10 @@
+{% include "partials/header.html" %}
+{% include "partials/navbar.html" %}
+<div class="pt-20 flex flex-col justify-center items-center p-10">
+<img src="{{ WebNovel.ImageUrlPath }}" alt="{{ WebNovel.Name }}" class="w-100 h-100 object-cover rounded">
+<h1 class="text-lg font-bold mt-2">{{ WebNovel.Name}}</h1>
+<p class="text-sm text-gray-600">by {{ WebNovel.AuthorName }}</p>
+<p class="text-sm text-gray-700">Chapters: {{ WebNovel.TotalChapters }}</p>
+<p class="text-sm text-gray-700 mt-1">{{ WebNovel.Info }}</p>
+</div>
+{% include "partials/footer.html" %}
