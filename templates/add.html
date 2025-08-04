@@ -1,0 +1,22 @@
+{% include "partials/header.html" %}
+{% include "partials/navbar.html"%}
+  <h1>Add New Web Novel</h1>
+  <form action="/novels/new" method="POST">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="author_name">Author Name:</label><br>
+    <input type="text" id="author_name" name="author_name" required><br><br>
+
+    <label for="total_chapters">Total Chapters:</label><br>
+    <input type="number" id="total_chapters" name="total_chapters" min="1" required><br><br>
+
+    <label for="info">Info:</label><br>
+    <textarea id="info" name="info" rows="4" cols="50" required></textarea><br><br>
+
+    <label for="image_url_path">Image URL:</label><br>
+    <input type="url" id="image_url_path" name="image_url_path"><br><br>
+
+    <input type="submit" value="Submit">
+  </form>
+{% include "partials/footer.html" %}

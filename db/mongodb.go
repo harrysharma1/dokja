@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -25,27 +24,11 @@ func ConnectToMongo() {
 	log.Println("Connected to MongoDB")
 }
 
-func PutToMongo(novel WebNovel) {
-	clientOptions := options.Client().ApplyURI("mongodb://127.0.0.1:27017")
-
-	client, err := mongo.Connect(clientOptions)
-	if err != nil {
-		panic(err)
-	}
-	defer client.Disconnect(context.TODO())
-
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+func InsertWebNovel(novel WebNovel) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := client.Ping(ctx, nil); err != nil {
-		log.Fatalf("MongoDB not Reachable: %s", err)
-	}
-
-	collection := client.Database("dokja").Collection("webnovels")
-	insertResult, err := collection.InsertOne(context.TODO(), novel)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("Inserted Webnovel with ID: %s", insertResult.InsertedID)
+	_, err := GetCollection().InsertOne(ctx, novel)
+	return err
 }
 
 func GetCollection() *mongo.Collection {
@@ -86,6 +69,7 @@ func FindWebNovelBasedOnUrlParam(urlPath string) (WebNovel, error) {
 	if urlPath != "" && urlPath[0] != '/' {
 		urlPath = "/" + urlPath
 	}
+
 	var novel WebNovel
 
 	err := GetCollection().FindOne(ctx, bson.M{"url_path": urlPath}).Decode(&novel)
