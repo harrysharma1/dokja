@@ -6,7 +6,7 @@
         by {{ novel.AuthorName }}<br>
         Chapters: {{ novel.TotalChapters }}<br>
         Info: {{ novel.Info }}<br>
-        <a href="{{ novel.UrlPath }}">Read more</a>
+        <a href="/novels{{ novel.UrlPath }}">Read more</a>
       </li>
     {% endfor %}
   </ul>

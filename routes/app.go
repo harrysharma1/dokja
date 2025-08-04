@@ -2,19 +2,14 @@ package routes
 
 import (
 	"dokja/db"
+	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/django/v3"
 )
 
-func Listen() {
-	engine := django.New("./templates", ".html")
-
-	app := fiber.New(fiber.Config{
-		Views: engine,
-	})
-
+func preFill() {
 	webNovels := []db.WebNovel{
 		{
 			Name:          "Omniscient Reader’s Viewpoint",
@@ -33,13 +28,36 @@ func Listen() {
 			UrlPath:       "/solo-leveling",
 		},
 	}
+	for i := range webNovels {
+		db.PutToMongo(webNovels[i])
+	}
+}
+
+func Listen() {
+	engine := django.New("./templates", ".html")
+
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		// Render index
+		webNovels, err := db.FindAllWebNovels()
+		if err != nil {
+			log.Fatalf("Error Getting Novels: %s", err)
+		}
 		return c.Render("index", fiber.Map{
 			"Title":     "Dokja",
 			"WebNovels": webNovels,
 		})
+	})
+
+	app.Get("/novels/:name?", func(c *fiber.Ctx) error {
+		webNovel, err := db.FindWebNovelBasedOnUrlParam(c.Params("name"))
+		if err != nil {
+			log.Fatalf("Error Getting Novel: %s", err)
+		}
+		return c.SendString(fmt.Sprintf("Name: %s,\nAuthor: %s,\nImage: %s,\nPath: %s", webNovel.Name, webNovel.AuthorName, webNovel.ImageUrlPath, webNovel.UrlPath))
 	})
 
 	log.Fatal(app.Listen(":6969"))
