@@ -115,6 +115,8 @@ func Listen() {
 			"Chapters": chapters,
 		})
 	})
-
+	app.Use(func(c *fiber.Ctx) error {
+		return c.Redirect("/", fiber.StatusTemporaryRedirect)
+	})
 	log.Fatal(app.Listen(":6969"))
 }
