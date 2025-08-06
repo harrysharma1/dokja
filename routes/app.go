@@ -5,6 +5,7 @@ import (
 	"dokja/util"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/django/v3"
@@ -63,6 +64,14 @@ func Listen() {
 		return c.Render("add", fiber.Map{
 			"Title": "Dokja - Add",
 		})
+	})
+
+	app.Post("/chapter/new", func(c *fiber.Ctx) error {
+		lastRouteFull := strings.Split(c.Get("Referer"), "/")
+		lastRoutePart := lastRouteFull[len(lastRouteFull)-2:]
+		lastRoutePath := strings.Join(lastRoutePart, "/")
+		lastRoutePath = "/" + lastRoutePath
+		return c.Redirect(lastRoutePath)
 	})
 
 	app.Post("/novels/new", func(c *fiber.Ctx) error {

@@ -1,0 +1,19 @@
+<button class="btn" onclick="my_modal_2.showModal()">Add Chapters(s)</button>
+<dialog id="my_modal_2" class="modal">
+  <div class="modal-box">
+    <form method="post" action="/chapter/new">
+        <label for="chapter_no">Chapter Number:</label><br>
+        <input type="text" id="chapter_no" name="chapter_no" required><br><br>
+
+        <label for="chapter_name">Chapter Name:</label><br>
+        <input type="text" id="chapter_name" name="chapter_name" required><br><br>
+
+        <label for="chapter_text">Formatted Texts:</label><br>
+        <input type="textarea" id="chapter_text" name="chapter_text" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

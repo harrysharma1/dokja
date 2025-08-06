@@ -1,5 +1,6 @@
 {% include "partials/header.html" %}
 {% include "partials/navbar.html"%}
+<div class="pt-20 flex flex-col justify-center items-center p-10">
   <h1>Add New Web Novel</h1>
   <form action="/novels/new" method="POST">
     <label for="name">Name:</label><br>
@@ -19,4 +20,5 @@
 
     <input type="submit" value="Submit">
   </form>
+</div>
 {% include "partials/footer.html" %}
