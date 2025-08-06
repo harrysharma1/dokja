@@ -96,7 +96,7 @@ func Listen() {
 			UrlPath:       util.Sluggify(c.FormValue("name")),
 		}
 		if err := db.InsertWebNovel(webNovel); err != nil {
-			return c.Status(500).SendString(fmt.Sprintf("Failed to insert %s", webNovel.Name))
+			return c.Status(500).SendString(fmt.Sprintf("Failed to insert chapter: %s", webNovel.Name))
 		}
 		return c.Redirect("/")
 	})
