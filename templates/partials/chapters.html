@@ -1,0 +1,22 @@
+<div class="mx-4">
+  <h1 class="text-lg font-bold mb-4">Chapters</h1>
+  {% for chapter in Chapters%}
+    <div class="bg-white shadow rounded-lg p-4 flex justify-between items-center">
+        <div>
+        <h2>Chapter {{ chapter.Number }}: {{ chapter.Title }}</h2>
+        </div>
+        <div class="flex items-center space-x-2">
+        <a href="{{chapter.UrlPath}}" class="text-green-500 hover:underline text-sm font-medium"> 
+            Go To 
+        </a>
+        <button class="text-blue-600 hover:underline text-sm font-medium">
+            Edit
+        </button>
+        <button class="text-red-500 hover:underline text-sm font-medium">
+            Delete
+        </button>
+        </div>
+    </div>
+{% endfor %}
+  <!-- Repeat for each chapter -->
+</div>

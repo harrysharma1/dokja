@@ -27,12 +27,23 @@ func ConnectToMongo() {
 func InsertWebNovel(novel WebNovel) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	_, err := GetCollection().InsertOne(ctx, novel)
+	_, err := GetCollectionNovels().InsertOne(ctx, novel)
 	return err
 }
 
-func GetCollection() *mongo.Collection {
+func InsertChapter(chapter Chapter) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_, err := GetCollectionChapters().InsertOne(ctx, chapter)
+	return err
+}
+
+func GetCollectionNovels() *mongo.Collection {
 	return client.Database("dokja").Collection("webnovels")
+}
+
+func GetCollectionChapters() *mongo.Collection {
+	return client.Database("dokja").Collection("chapters")
 }
 
 func FindAllWebNovels() ([]WebNovel, error) {
@@ -41,7 +52,7 @@ func FindAllWebNovels() ([]WebNovel, error) {
 
 	var novels []WebNovel
 
-	cursor, err := GetCollection().Find(ctx, bson.M{})
+	cursor, err := GetCollectionNovels().Find(ctx, bson.M{})
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +74,7 @@ func FindAllWebNovels() ([]WebNovel, error) {
 	return novels, nil
 }
 
-func FindWebNovelBasedOnUrlParam(urlPath string) (WebNovel, error) {
+func FindWebNovelBasedOnUrlParam(urlPath string) (WebNovel, []Chapter, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if urlPath != "" && urlPath[0] != '/' {
@@ -71,13 +82,32 @@ func FindWebNovelBasedOnUrlParam(urlPath string) (WebNovel, error) {
 	}
 
 	var novel WebNovel
+	var chapters []Chapter
 
-	err := GetCollection().FindOne(ctx, bson.M{"url_path": urlPath}).Decode(&novel)
+	err := GetCollectionNovels().FindOne(ctx, bson.M{"url_path": urlPath}).Decode(&novel)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return novel, nil
+			return novel, chapters, nil
 		}
-		return novel, err
+		return novel, chapters, err
 	}
-	return novel, nil
+	cursor, err := GetCollectionChapters().Find(ctx, bson.M{})
+	if err != nil {
+		return novel, chapters, err
+	}
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		var chapter Chapter
+		if err := cursor.Decode(&chapter); err != nil {
+			log.Printf("Decode Error: %s", err)
+			continue
+		}
+		chapters = append(chapters, chapter)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return novel, chapters, err
+	}
+	return novel, chapters, nil
 }

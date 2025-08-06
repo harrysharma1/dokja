@@ -71,6 +71,18 @@ func Listen() {
 		lastRoutePart := lastRouteFull[len(lastRouteFull)-2:]
 		lastRoutePath := strings.Join(lastRoutePart, "/")
 		lastRoutePath = "/" + lastRoutePath
+
+		chapterInfo := db.Chapter{
+			WebNovelUrlPath: lastRoutePath,
+			Number:          util.ParseInt(c.FormValue("chapter_no")),
+			Title:           c.FormValue("chapter_name"),
+			UrlPath:         fmt.Sprintf("%s/chapters/%s", lastRoutePath, c.FormValue("chapter_no")),
+			Text:            c.FormValue("chapter_text"),
+		}
+		if err := db.InsertChapter(chapterInfo); err != nil {
+			return c.Status(500).SendString(fmt.Sprintf("Failed to insert %s", chapterInfo.Title))
+		}
+
 		return c.Redirect(lastRoutePath)
 	})
 
@@ -90,7 +102,7 @@ func Listen() {
 	})
 
 	app.Get("/novels/:name?", func(c *fiber.Ctx) error {
-		webNovel, err := db.FindWebNovelBasedOnUrlParam(c.Params("name"))
+		webNovel, chapters, err := db.FindWebNovelBasedOnUrlParam(c.Params("name"))
 		if err != nil {
 			log.Fatalf("Error Getting Novel: %s", err)
 		}
@@ -100,6 +112,7 @@ func Listen() {
 		return c.Render("individual_novel_page", fiber.Map{
 			"Title":    fmt.Sprintf("Dokja - %s", webNovel.Name),
 			"WebNovel": webNovel,
+			"Chapters": chapters,
 		})
 	})
 

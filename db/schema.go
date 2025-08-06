@@ -9,13 +9,10 @@ type WebNovel struct {
 	UrlPath       string `bson:"url_path"`
 }
 
-type Chapters struct {
-	WebNovelUrlPath string    `bson:"webnovel_url_path"`
-	ChaptersUrlPath []Chapter `bson:"chapters"`
-}
-
 type Chapter struct {
-	ChapterTitle string `bson:"chapter_title"`
-	UrlPath      string `bson:"url_path"`
-	ChapterText  string `bson:"chapter_text"`
+	WebNovelUrlPath string `bson:"webnovel_url_path"`
+	Number          int    `bson:"chapter_number"`
+	Title           string `bson:"chapter_title"`
+	UrlPath         string `bson:"url_path"`
+	Text            string `bson:"chapter_text"`
 }
