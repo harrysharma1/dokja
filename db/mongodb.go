@@ -13,22 +13,6 @@ import (
 
 var client *mongo.Client
 
-func CreateUniqueIndexOnChapters(collection *mongo.Collection) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	indexModel := mongo.IndexModel{
-		Keys: bson.D{
-			{Key: "webnovel_url_path", Value: 1},
-			{Key: "chapter_number", Value: 1},
-		},
-		Options: options.Index().SetUnique(true),
-	}
-
-	_, error := collection.Indexes().CreateOne(ctx, indexModel)
-	return error
-}
-
 func ConnectToMongo() {
 	var err error
 	_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -39,11 +23,6 @@ func ConnectToMongo() {
 		log.Fatal("MongoDB connection error:", err)
 	}
 	log.Println("Connected to MongoDB")
-
-	errMakingUniqueChapterKey := CreateUniqueIndexOnChapters(GetCollectionChapters())
-	if errMakingUniqueChapterKey != nil {
-		log.Fatal("Failed to create unique index:", errMakingUniqueChapterKey)
-	}
 }
 
 func InsertWebNovel(novel WebNovel) error {
@@ -58,16 +37,16 @@ func InsertChapter(chapter Chapter) error {
 	defer cancel()
 	_, chapters, err := FindWebNovelBasedOnUrlParam(chapter.WebNovelUrlPath)
 	if err != nil {
-		return fmt.Errorf("Failed to find chapters: %w", err)
+		return fmt.Errorf("failed to find chapters: %w", err)
 	}
 	for _, c := range chapters {
 		if chapter.Number == c.Number {
-			return fmt.Errorf("Chapter %d already exists", chapter.Number)
+			return fmt.Errorf("fhapter %d already exists", chapter.Number)
 		}
 	}
 	_, errInserting := GetCollectionChapters().InsertOne(ctx, chapter)
 	if errInserting != nil {
-		return fmt.Errorf("Failed to insert chapter: %w", errInserting)
+		return fmt.Errorf("failed to insert chapter: %w", errInserting)
 	}
 	return nil
 }
@@ -125,7 +104,9 @@ func FindWebNovelBasedOnUrlParam(urlPath string) (WebNovel, []Chapter, error) {
 		}
 		return novel, chapters, err
 	}
-	cursor, err := GetCollectionChapters().Find(ctx, bson.M{})
+	cursor, err := GetCollectionChapters().Find(ctx, bson.M{
+		"webnovel_url_path": "/novels" + urlPath,
+	})
 	if err != nil {
 		return novel, chapters, err
 	}
