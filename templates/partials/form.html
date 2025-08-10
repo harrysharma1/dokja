@@ -1,0 +1,13 @@
+    <form method="post" action="/chapter/update">
+        <label for="chapter_no">Chapter Number:</label><br>
+        <input type="number" id="chapter_no" name="chapter_no" value="{{Chapter.Number}}" required><br><br>
+
+        <label for="chapter_name">Chapter Name:</label><br>
+        <input type="text" id="chapter_name" name="chapter_name" value="{{Chapter.Title}}" required><br><br>
+
+        <label for="chapter_text">Formatted Texts:</label><br>
+        <input type="text-area" id="chapter_text" name="chapter_text" value="{{Chapter.Text}}" required><br><br>
+
+        <input type="hidden" id="full_chapter" name="full_chapter" value="{{Chapter}}"/>
+        <input type="submit" value="Submit">
+    </form>

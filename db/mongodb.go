@@ -148,6 +148,23 @@ func FindWebNovelBasedOnUrlParam(urlPath string) (WebNovel, []Chapter, error) {
 	return novel, chapters, nil
 }
 
+func FindChapterBasedOnUrlParam(urlPath string) (Chapter, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var chapter Chapter
+	err := GetCollectionChapters().FindOne(ctx, bson.M{
+		"url_path": urlPath,
+	}).Decode(&chapter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return chapter, err
+		}
+		return chapter, err
+	}
+
+	return chapter, nil
+}
+
 func DeleteChapter(urlPath string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

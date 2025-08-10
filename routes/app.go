@@ -128,8 +128,31 @@ func Listen() {
 		}
 		return c.Redirect(redirectPath)
 	})
+
+	app.Post("/chapter/update", func(c *fiber.Ctx) error {
+		chapter := c.FormValue("full_chapter")
+		fmt.Printf("chapter: %s", chapter)
+		return c.Redirect("/")
+	})
+
+	app.Get("/novels/:name/chapters/:number/edit", func(c *fiber.Ctx) error {
+		name := c.Params("name")
+		number := c.Params("number")
+		urlPath := fmt.Sprintf("/novels/%s/chapters/%s", name, number)
+
+		chapter, err := db.FindChapterBasedOnUrlParam(urlPath)
+		if err != nil {
+			log.Fatalf("error retrieving chapter: %s", err)
+		}
+		return c.Render("edit_chapter", fiber.Map{
+			"Title":   fmt.Sprintf("Dokja - %d: %s - edit", chapter.Number, chapter.Title),
+			"Chapter": chapter,
+		})
+	})
+
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Redirect("/", fiber.StatusTemporaryRedirect)
 	})
+
 	log.Fatal(app.Listen(":6969"))
 }

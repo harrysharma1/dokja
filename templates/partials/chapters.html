@@ -6,12 +6,12 @@
         <h2>Chapter {{ chapter.Number }}: {{ chapter.Title }}</h2>
         </div>
         <div class="flex items-center space-x-2">
-        <a href="{{chapter.UrlPath}}" class="text-green-500 hover:underline text-sm font-medium"> 
+        <a href="{{ chapter.UrlPath }}" class="text-green-500 hover:underline text-sm font-medium"> 
             Go To 
         </a>
-        <button class="text-blue-600 hover:underline text-sm font-medium">
+        <a href="{{ chapter.UrlPath }}/edit" class="text-blue-600 hover:underline text-sm font-medium">
             Edit
-        </button>
+        </a>
         <form action="/chapter/remove" method="Post"> 
         <input type="hidden" name="url_path" value="{{ chapter.UrlPath }}"/>
         <input type="hidden" name="redirect_path" value="{{ chapter.WebNovelUrlPath }}"/>
@@ -22,5 +22,4 @@
         </div>
     </div>
 {% endfor %}
-  <!-- Repeat for each chapter -->
 </div>
