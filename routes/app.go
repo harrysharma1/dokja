@@ -115,6 +115,19 @@ func Listen() {
 			"Chapters": chapters,
 		})
 	})
+
+	app.Post("/chapter/remove", func(c *fiber.Ctx) error {
+		urlPath := c.FormValue("url_path")
+		redirectPath := c.FormValue("redirect_path")
+		if urlPath == "" {
+			return c.Status(fiber.StatusBadRequest).SendString("Missing url_path")
+		}
+
+		if err := db.DeleteChapter(urlPath); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Failed to delete chapter: " + err.Error())
+		}
+		return c.Redirect(redirectPath)
+	})
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Redirect("/", fiber.StatusTemporaryRedirect)
 	})

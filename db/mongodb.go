@@ -13,6 +13,22 @@ import (
 
 var client *mongo.Client
 
+func CreateUniqueIndexOnChapters(collection *mongo.Collection) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	indexModel := mongo.IndexModel{
+		Keys: bson.D{
+			{Key: "webnovel_url_path", Value: 1},
+			{Key: "chapter_number", Value: 1},
+		},
+		Options: options.Index().SetUnique(true),
+	}
+
+	_, error := collection.Indexes().CreateOne(ctx, indexModel)
+	return error
+}
+
 func ConnectToMongo() {
 	var err error
 	_, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -22,7 +38,12 @@ func ConnectToMongo() {
 	if err != nil {
 		log.Fatal("MongoDB connection error:", err)
 	}
+
 	log.Println("Connected to MongoDB")
+	errMakingUniqueChapterKey := CreateUniqueIndexOnChapters(GetCollectionChapters())
+	if errMakingUniqueChapterKey != nil {
+		log.Fatal("Failed to create unique index:", errMakingUniqueChapterKey)
+	}
 }
 
 func InsertWebNovel(novel WebNovel) error {
@@ -125,4 +146,14 @@ func FindWebNovelBasedOnUrlParam(urlPath string) (WebNovel, []Chapter, error) {
 		return novel, chapters, err
 	}
 	return novel, chapters, nil
+}
+
+func DeleteChapter(urlPath string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := GetCollectionChapters().DeleteOne(ctx, bson.M{
+		"url_path": urlPath,
+	})
+	return err
 }

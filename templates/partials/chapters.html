@@ -12,9 +12,13 @@
         <button class="text-blue-600 hover:underline text-sm font-medium">
             Edit
         </button>
-        <button class="text-red-500 hover:underline text-sm font-medium">
+        <form action="/chapter/remove" method="Post"> 
+        <input type="hidden" name="url_path" value="{{ chapter.UrlPath }}"/>
+        <input type="hidden" name="redirect_path" value="{{ chapter.WebNovelUrlPath }}"/>
+        <button type="submit" class="text-red-500 hover:underline text-sm font-medium">
             Delete
         </button>
+        </form>
         </div>
     </div>
 {% endfor %}
