@@ -8,6 +8,7 @@
         <label for="chapter_text">Formatted Texts:</label><br>
         <input type="text-area" id="chapter_text" name="chapter_text" value="{{Chapter.Text}}" required><br><br>
 
-        <input type="hidden" id="full_chapter" name="full_chapter" value="{{Chapter}}"/>
+        <input type="hidden" id="url_path" name="url_path" value="{{Chapter.UrlPath}}"/>
+        <input type="hidden" id="webnovel_url_path" name="webnovel_url_path" value="{{Chapter.WebNovelUrlPath}}"/>
         <input type="submit" value="Submit">
     </form>

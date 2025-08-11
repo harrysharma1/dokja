@@ -5,6 +5,7 @@ import (
 	"dokja/util"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -130,8 +131,18 @@ func Listen() {
 	})
 
 	app.Post("/chapter/update", func(c *fiber.Ctx) error {
-		chapter := c.FormValue("full_chapter")
-		fmt.Printf("chapter: %s", chapter)
+		chapterNo, err := strconv.Atoi(c.FormValue("chapter_no"))
+		if err != nil {
+			log.Fatalf("error converting string integer: %d", chapterNo)
+		}
+		chapter := db.Chapter{
+			WebNovelUrlPath: c.FormValue("webnovel_url_path"),
+			Number:          chapterNo,
+			Title:           c.FormValue("chapter_name"),
+			Text:            c.FormValue("chapter_text"),
+			UrlPath:         c.FormValue("url_path"),
+		}
+		fmt.Printf("chapter: %+v", chapter)
 		return c.Redirect("/")
 	})
 
