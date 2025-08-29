@@ -142,7 +142,9 @@ func Listen() {
 			Text:            c.FormValue("chapter_text"),
 			UrlPath:         c.FormValue("url_path"),
 		}
-		fmt.Printf("chapter: %+v", chapter)
+		if err := db.UpdateChapter(chapter.UrlPath, chapter); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Failed to update chapter: " + err.Error())
+		}
 		return c.Redirect("/")
 	})
 

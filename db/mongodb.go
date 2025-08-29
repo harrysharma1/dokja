@@ -165,6 +165,21 @@ func FindChapterBasedOnUrlParam(urlPath string) (Chapter, error) {
 	return chapter, nil
 }
 
+func UpdateChapter(urlPath string, c Chapter) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	update := bson.D{
+		{"$set", bson.D{{"chapter_text", c.Text}}},
+		{"$set", bson.D{{"chapter_number", c.Number}}},
+		{"$set", bson.D{{"chapter_title", c.Title}}},
+	}
+
+	_, err := GetCollectionChapters().UpdateOne(ctx, bson.M{
+		"url_path": urlPath,
+	}, update)
+	return err
+}
+
 func DeleteChapter(urlPath string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
