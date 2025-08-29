@@ -163,9 +163,21 @@ func Listen() {
 		})
 	})
 
-	app.Use(func(c *fiber.Ctx) error {
-		return c.Redirect("/", fiber.StatusTemporaryRedirect)
+	app.Get("/novels/:name/chapters/:number", func(c *fiber.Ctx) error {
+		name := c.Params("name")
+		number := c.Params("number")
+		urlPath := fmt.Sprintf("/novels/%s/chapters/%s", name, number)
+
+		chapter, err := db.FindChapterBasedOnUrlParam(urlPath)
+		if err != nil {
+			log.Fatalf("error retrieving chapter: %s", err)
+		}
+		return c.Render("individual_chapter_page", fiber.Map{
+			"Title":   fmt.Sprintf("Dokja - %d: %s", chapter.Number, chapter.Title),
+			"Chapter": chapter,
+		})
 	})
+	app.Static("/", "./public")
 
 	log.Fatal(app.Listen(":6969"))
 }
